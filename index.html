@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lighter Compute – Your digital carbon footprint</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&family=Newsreader:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#eef3ee; --surface:#ffffff; --ink:#14261f; --muted:#51655c; --line:#cfdbd2;
+  --accent:#3f7e44; --accent-ink:#ffffff; --warm:#b4581f; --bar:#dbe7dc;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){--bg:#0f1c17;--surface:#172a23;--ink:#e6f0e8;--muted:#9bb2a6;--line:#2c4338;--accent:#7bc67f;--accent-ink:#0f1c17;--warm:#f0a46a;--bar:#243a30;color-scheme:dark}
+}
+:root[data-theme="dark"]{--bg:#0f1c17;--surface:#172a23;--ink:#e6f0e8;--muted:#9bb2a6;--line:#2c4338;--accent:#7bc67f;--accent-ink:#0f1c17;--warm:#f0a46a;--bar:#243a30;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Newsreader',Georgia,serif;font-size:18px;line-height:1.6}
+h1,h2,h3,.sans{font-family:'Bricolage Grotesque','Helvetica Neue',Arial,sans-serif}
+a{color:var(--accent)}
+:focus-visible{outline:3px solid var(--warm);outline-offset:2px}
+.wrap{max-width:1040px;margin:0 auto;padding:0 22px}
+header.top{display:flex;justify-content:space-between;align-items:center;padding:18px 0}
+.brand{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:1.15rem;letter-spacing:-.01em}
+.tag{font-family:'Bricolage Grotesque',sans-serif;font-size:.85rem;background:var(--accent);color:var(--accent-ink);padding:4px 10px;border-radius:4px;font-weight:600}
+nav a{font-family:'Bricolage Grotesque',sans-serif;font-size:.95rem;margin-left:18px;text-decoration:none;color:var(--ink)}
+nav a:hover{text-decoration:underline}
+h1{font-size:clamp(2.2rem,6vw,4rem);line-height:1.04;letter-spacing:-.03em;font-weight:800;margin:28px 0 14px;max-width:16ch}
+.lede{max-width:56ch;color:var(--muted);font-size:1.15rem;margin:0 0 30px}
+.calc{display:grid;grid-template-columns:1.1fr .9fr;gap:0;background:var(--surface);border:2px solid var(--ink);border-radius:10px;overflow:hidden}
+.inputs{padding:26px;border-right:2px solid var(--ink)}
+.row{margin-bottom:20px}
+.row label{display:flex;justify-content:space-between;gap:12px;font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:.98rem}
+.row output{color:var(--accent);font-weight:800;white-space:nowrap}
+input[type=range]{width:100%;accent-color:var(--accent);height:28px;margin:4px 0 0}
+.hint{font-size:.85rem;color:var(--muted);margin:0}
+.result{padding:26px;background:var(--bar);display:flex;flex-direction:column;gap:16px}
+.big{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:clamp(3rem,8vw,4.6rem);line-height:1;letter-spacing:-.04em}
+.big small{font-size:1.1rem;font-weight:600;letter-spacing:0;margin-left:6px}
+.compare{display:flex;flex-direction:column;gap:6px;font-size:1rem}
+.compare b{font-family:'Bricolage Grotesque',sans-serif}
+.bars{display:flex;flex-direction:column;gap:9px;margin-top:4px}
+.bar{display:grid;grid-template-columns:96px 1fr 58px;align-items:center;gap:8px;font-family:'Bricolage Grotesque',sans-serif;font-size:.85rem}
+.bar i{display:block;height:12px;background:var(--accent);border-radius:2px;width:0;transition:width .35s ease}
+.bar span:last-child{text-align:right;color:var(--muted)}
+.note{font-size:.8rem;color:var(--muted);margin:0}
+section{padding:64px 0 8px}
+h2{font-size:clamp(1.7rem,4vw,2.5rem);letter-spacing:-.025em;line-height:1.1;margin:0 0 14px;max-width:22ch}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:36px}
+.tablist{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0}
+.tablist button{border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--ink);font:600 .92rem 'Bricolage Grotesque',sans-serif;padding:9px 15px;cursor:pointer}
+.tablist button[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.tab-panel[hidden]{display:none}
+.activity-panels{min-height:290px}
+.habits{list-style:none;padding:0;margin:18px 0 0}
+.habits li{border-top:1px solid var(--line)}
+.habits label{display:flex;gap:14px;align-items:flex-start;padding:14px 0;cursor:pointer}
+.habits input{width:22px;height:22px;margin-top:4px;accent-color:var(--accent);flex:none}
+.habits b{font-family:'Bricolage Grotesque',sans-serif;display:block}
+.habits .sv{margin-left:auto;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;color:var(--accent);white-space:nowrap}
+.saved{margin-top:14px;padding:16px;border:2px solid var(--accent);border-radius:8px;font-family:'Bricolage Grotesque',sans-serif;font-weight:600}
+.dev dt{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;margin-top:18px}
+.dev dd{margin:2px 0 0;color:var(--muted)}
+.sdg{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:20px}
+.sdg div{padding:18px;border-radius:8px;color:#fff}
+.sdg h3{margin:0 0 4px;font-size:1.05rem}
+.sdg p{margin:0;font-size:.95rem;line-height:1.45}
+footer{margin-top:70px;padding:28px 0 40px;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem}
+@media (max-width:820px){
+  .calc,.two,.sdg{grid-template-columns:1fr}
+  .inputs{border-right:0;border-bottom:2px solid var(--ink)}
+  nav{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <span class="brand">Lighter Compute</span>
+    <nav><a href="#activities">Your activities</a><a href="#habits">Habits</a><a href="#build">For developers</a><a href="#sdg">SDG references</a></nav>
+    <span class="tag">Make a lighter choice</span>
+  </header>
+
+  <main>
+    <h1>Every click runs on a power plant.</h1>
+    <p class="lede">Streaming, chatbots, email and cloud backups all run in data centres that draw electricity. Move the sliders to estimate your own digital carbon footprint for a year.</p>
+
+    <div class="calc" id="activities">
+      <div class="inputs">
+        <div class="tablist" role="tablist" aria-label="Daily digital activities">
+          <button type="button" role="tab" id="activity-tab-watch" aria-controls="activity-watch" aria-selected="true">Watch & play</button>
+          <button type="button" role="tab" id="activity-tab-connect" aria-controls="activity-connect" aria-selected="false">Call & create</button>
+          <button type="button" role="tab" id="activity-tab-store" aria-controls="activity-store" aria-selected="false">Browse & store</button>
+        </div>
+        <div class="activity-panels">
+          <div class="tab-panel" id="activity-watch" role="tabpanel" aria-labelledby="activity-tab-watch">
+            <div class="row"><label for="s1">Video streaming <output id="o1"></output></label><input id="s1" type="range" min="0" max="40" value="10"><p class="hint">Hours per week</p></div>
+            <div class="row"><label for="s6">Gaming or 4K screen time <output id="o6"></output></label><input id="s6" type="range" min="0" max="40" value="5"><p class="hint">Hours per week on a desktop or console</p></div>
+            <div class="row"><label for="s8">Music streaming <output id="o8"></output></label><input id="s8" type="range" min="0" max="50" value="8"><p class="hint">Hours per week</p></div>
+          </div>
+          <div class="tab-panel" id="activity-connect" role="tabpanel" aria-labelledby="activity-tab-connect" hidden>
+            <div class="row"><label for="s2">Video calls <output id="o2"></output></label><input id="s2" type="range" min="0" max="30" value="4"><p class="hint">Hours per week</p></div>
+            <div class="row"><label for="s3">AI chatbot prompts <output id="o3"></output></label><input id="s3" type="range" min="0" max="200" value="15"><p class="hint">Prompts per day</p></div>
+          </div>
+          <div class="tab-panel" id="activity-store" role="tabpanel" aria-labelledby="activity-tab-store" hidden>
+            <div class="row"><label for="s7">Web browsing & social feeds <output id="o7"></output></label><input id="s7" type="range" min="0" max="12" value="3"><p class="hint">Hours per day</p></div>
+            <div class="row"><label for="s4">Emails sent <output id="o4"></output></label><input id="s4" type="range" min="0" max="200" value="30"><p class="hint">Per day, with attachments counted as ordinary mail</p></div>
+            <div class="row"><label for="s5">Cloud storage <output id="o5"></output></label><input id="s5" type="range" min="0" max="2000" step="10" value="100"><p class="hint">Gigabytes stored</p></div>
+          </div>
+        </div>
+      </div>
+      <div class="result" aria-live="polite">
+        <div>
+          <div class="big"><span id="total">0</span><small>kg CO₂e / year</small></div>
+        </div>
+        <div class="compare">
+          <span>About <b id="km">0</b> km driven in an average petrol car</span>
+          <span>About <b id="trees">0</b> trees needed to absorb it for a year</span>
+        </div>
+        <div class="bars" id="bars"></div>
+        <p class="note">Rough estimates using typical published averages. Real figures depend on your local grid, devices and the services you use.</p>
+      </div>
+    </div>
+  </main>
+
+  <section id="habits">
+    <h2>Pick the habits you’ll keep.</h2>
+    <p style="color:var(--muted)">Choose a category, then tick the habits you’re willing to try. Your estimate stays the same; potential savings appear here.</p>
+    <div class="saved" id="saved" aria-live="polite">Tick a habit to see what you would save.</div>
+    <div class="tablist" role="tablist" aria-label="Habit categories">
+      <button type="button" role="tab" id="habit-tab-watch" aria-controls="habit-watch" aria-selected="true">Streaming & browsing</button>
+      <button type="button" role="tab" id="habit-tab-connect" aria-controls="habit-connect" aria-selected="false">Calls & AI</button>
+      <button type="button" role="tab" id="habit-tab-store" aria-controls="habit-store" aria-selected="false">Email, storage & devices</button>
+    </div>
+    <div class="habit-panels">
+      <div class="tab-panel" id="habit-watch" role="tabpanel" aria-labelledby="habit-tab-watch">
+        <ul class="habits" id="habitList-watch"></ul>
+      </div>
+      <div class="tab-panel" id="habit-connect" role="tabpanel" aria-labelledby="habit-tab-connect" hidden>
+        <ul class="habits" id="habitList-connect"></ul>
+      </div>
+      <div class="tab-panel" id="habit-store" role="tabpanel" aria-labelledby="habit-tab-store" hidden>
+        <ul class="habits" id="habitList-store"></ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="why">
+    <h2>Why compute counts for the climate.</h2>
+    <div class="two">
+      <p>Data centres and networks use a share of the world’s electricity that is small today but growing fast, mostly because of video and AI workloads. Where that power comes from decides the impact: the same task is far cleaner on a grid full of wind, solar and hydro than on one run mainly on coal.</p>
+      <p>Sustainable computing is practical climate action: use less energy per task, run work where and when power is cleaner, and keep devices in use for longer.</p>
+    </div>
+  </section>
+
+  <section id="build">
+    <h2>If you build software, start here.</h2>
+    <dl class="dev">
+      <dt>Send less data</dt><dd>Compress images, use modern formats, lazy-load media and cache aggressively. Smaller pages use less energy on the server, the network and the device.</dd>
+      <dt>Right-size the compute</dt><dd>Use smaller models when they are good enough, batch jobs, and switch off idle servers and test environments.</dd>
+      <dt>Run it where the grid is clean</dt><dd>Choose cloud regions with low-carbon electricity and schedule flexible jobs for times when renewables are plentiful.</dd>
+      <dt>Measure it</dt><dd>Track energy and emissions the same way you track latency and cost, so improvements are visible.</dd>
+    </dl>
+  </section>
+
+  <section id="sdg">
+    <h2>SDG reference points.</h2>
+    <p style="color:var(--muted)">These United Nations Sustainable Development Goals connect everyday digital choices with broader sustainability work.</p>
+    <div class="sdg">
+      <div style="background:#3f7e44"><h3>SDG 13 · Climate Action</h3><p>Take urgent action to combat climate change and its impacts.</p></div>
+      <div style="background:#bf8b2e"><h3>SDG 12 · Responsible Consumption</h3><p>Ensure sustainable consumption and production patterns, including reducing waste.</p></div>
+      <div style="background:#f36d25"><h3>SDG 9 · Industry, Innovation and Infrastructure</h3><p>Build resilient infrastructure and promote sustainable industry and innovation.</p></div>
+    </div>
+  </section>
+
+  <footer>Emission factors are illustrative averages for education; check current sources such as the IEA before quoting figures.</footer>
+</div>
+
+<script>
+// kg CO2e per unit per year (rough illustrative averages)
+var F=[
+ {id:'s1',name:'Streaming',unit:' h/wk',k:52*0.036,fmt:function(v){return v+' h/wk'}},
+ {id:'s2',name:'Video calls',unit:' h/wk',k:52*0.06,fmt:function(v){return v+' h/wk'}},
+ {id:'s3',name:'AI prompts',unit:'/day',k:365*0.0003*3,fmt:function(v){return v+'/day'}},
+ {id:'s4',name:'Email',unit:'/day',k:365*0.004,fmt:function(v){return v+'/day'}},
+ {id:'s5',name:'Cloud storage',unit:' GB',k:0.2,fmt:function(v){return v+' GB'}},
+ {id:'s6',name:'Gaming / 4K',unit:' h/wk',k:52*0.1,fmt:function(v){return v+' h/wk'}},
+ {id:'s7',name:'Browsing',unit:' h/day',k:365*0.005,fmt:function(v){return v+' h/day'}},
+ {id:'s8',name:'Music streaming',unit:' h/wk',k:52*0.008,fmt:function(v){return v+' h/wk'}}
+];
+var H=[
+ {t:'Choose standard definition on small screens',d:'Skip HD or 4K when the difference is hard to notice.',id:'s1',pct:.4,group:'watch'},
+ {t:'Download favourites instead of re-streaming',d:'A saved copy can avoid repeat network transfers.',id:'s1',pct:.1,group:'watch'},
+ {t:'Turn off autoplay',d:'Let each video be a deliberate choice.',id:'s1',pct:.1,group:'watch'},
+ {t:'Use audio-only mode for music you do not need to watch',d:'Avoid sending video when sound is all you need.',id:'s8',pct:.3,group:'watch'},
+ {t:'Close feeds when you are done browsing',d:'Set a stopping point instead of leaving media playing.',id:'s7',pct:.15,group:'watch'},
+ {t:'Turn the camera off when it is not needed',d:'Audio-only calls generally move less data.',id:'s2',pct:.5,group:'connect'},
+ {t:'Keep meetings focused and concise',d:'A shorter call means less time streaming audio and video.',id:'s2',pct:.2,group:'connect'},
+ {t:'Use a simple search or smaller model for simple questions',d:'Save more compute-intensive AI for tasks that need it.',id:'s3',pct:.3,group:'connect'},
+ {t:'Combine related AI questions',d:'Plan prompts together rather than repeating similar requests.',id:'s3',pct:.1,group:'connect'},
+ {t:'Unsubscribe from mail you do not read',d:'Fewer newsletters mean fewer messages to send and store.',id:'s4',pct:.2,group:'store'},
+ {t:'Clear duplicate files and old backups',d:'Keep only the cloud files you still need.',id:'s5',pct:.3,group:'store'},
+ {t:'Lower frame rate and screen brightness while gaming',d:'Reduce power use on your own device.',id:'s6',pct:.3,group:'store'},
+ {t:'Use Wi-Fi for large downloads when practical',d:'Avoid unnecessary mobile-network data transfers.',id:'s7',pct:.1,group:'store'}
+];
+function $(i){return document.getElementById(i)}
+function val(id){return +$(id).value}
+function fmtN(n){return n>=100?Math.round(n).toLocaleString('en'):n.toFixed(1)}
+function setupTabs(tablist){
+  var tabs=Array.prototype.slice.call(tablist.querySelectorAll('[role="tab"]'));
+  function activate(index,focus){
+    tabs.forEach(function(tab,i){
+      var selected=i===index;
+      tab.setAttribute('aria-selected',selected?'true':'false');
+      tab.tabIndex=selected?0:-1;
+      $(tab.getAttribute('aria-controls')).hidden=!selected;
+    });
+    if(focus)tabs[index].focus();
+  }
+  tabs.forEach(function(tab,index){
+    tab.addEventListener('click',function(){activate(index,false)});
+    tab.addEventListener('keydown',function(event){
+      var next=index;
+      if(event.key==='ArrowRight')next=(index+1)%tabs.length;
+      else if(event.key==='ArrowLeft')next=(index+tabs.length-1)%tabs.length;
+      else if(event.key==='Home')next=0;
+      else if(event.key==='End')next=tabs.length-1;
+      else return;
+      event.preventDefault();
+      activate(next,true);
+    });
+  });
+}
+function calc(){
+  var tot=0,parts=[];
+  F.forEach(function(f){var v=val(f.id);$('o'+f.id.slice(1)).textContent=f.fmt(v);var c=v*f.k;parts.push(c);tot+=c});
+  $('total').textContent=fmtN(tot);
+  $('km').textContent=Math.round(tot/0.17).toLocaleString('en');
+  $('trees').textContent=Math.max(0.1,tot/21).toFixed(1);
+  var max=Math.max.apply(null,parts)||1,h='';
+  F.forEach(function(f,i){h+='<div class="bar"><span>'+f.name+'</span><i style="width:'+(parts[i]/max*100)+'%"></i><span>'+fmtN(parts[i])+'</span></div>'});
+  $('bars').innerHTML=h;
+  saved();
+}
+function saved(){
+  var s=0,n=0;
+  H.forEach(function(h,i){if($('h'+i).checked){var f=F.filter(function(x){return x.id===h.id})[0];s+=val(h.id)*f.k*h.pct;n++}});
+  $('saved').textContent=n? 'These '+n+(n>1?' habits':' habit')+' would save about '+fmtN(s)+' kg CO₂e a year.' : 'Tick a habit to see what you would save.';
+}
+H.forEach(function(h,i){
+  var ul=$('habitList-'+h.group);
+  var li=document.createElement('li');
+  var label=document.createElement('label');
+  var checkbox=document.createElement('input');
+  checkbox.type='checkbox';
+  checkbox.id='h'+i;
+  var text=document.createElement('span');
+  var title=document.createElement('b');
+  title.textContent=h.t;
+  text.appendChild(title);
+  text.appendChild(document.createTextNode(h.d));
+  label.appendChild(checkbox);
+  label.appendChild(text);
+  li.appendChild(label);
+  ul.appendChild(li);
+  checkbox.addEventListener('change',saved);
+});
+F.forEach(function(f){$(f.id).addEventListener('input',calc)});
+Array.prototype.forEach.call(document.querySelectorAll('[role="tablist"]'),setupTabs);
+calc();
+</script>
+</body>
+</html>
